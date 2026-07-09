@@ -178,6 +178,7 @@ jobs:
           [ -n "$VPS_USER" ] || { echo "VPS_USER is not configured" >&2; exit 1; }
           [ -n "$VPS_TARGET_DIR" ] || { echo "VPS_TARGET_DIR is not configured" >&2; exit 1; }
           [ -n "$VPS_PROJECT_DIR" ] || { echo "VPS_PROJECT_DIR is empty" >&2; exit 1; }
+          [ -n "$LUCI_BRANCH" ] || { echo "LUCI_BRANCH is empty" >&2; exit 1; }
           [ -n "$DEFAULT_VERSION" ] || { echo "DEFAULT_VERSION is empty" >&2; exit 1; }
           [ -n "$BRANCH_NAME" ] || { echo "BRANCH_NAME is empty" >&2; exit 1; }
           [[ "$VPS_USER" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Invalid VPS_USER" >&2; exit 1; }
@@ -186,13 +187,14 @@ jobs:
           [ "$VPS_TARGET_DIR" != "/" ] || { echo "VPS_TARGET_DIR must not be /" >&2; exit 1; }
           [[ "$VPS_TARGET_DIR" != *".."* ]] || { echo "VPS_TARGET_DIR must not contain .." >&2; exit 1; }
           [[ "$VPS_PROJECT_DIR" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Invalid VPS_PROJECT_DIR" >&2; exit 1; }
+          [[ "$LUCI_BRANCH" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Invalid LUCI_BRANCH" >&2; exit 1; }
           [[ "$DEFAULT_VERSION" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Invalid DEFAULT_VERSION" >&2; exit 1; }
           [[ "$BRANCH_NAME" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Invalid BRANCH_NAME" >&2; exit 1; }
           [ -d "$OPENWRT_PATH/bin" ] || { echo "Firmware bin directory does not exist" >&2; exit 1; }
 
           remote="$VPS_USER@$VPS_HOST"
           target_root="${VPS_TARGET_DIR%/}"
-          target_dir="$target_root/$VPS_PROJECT_DIR/$BRANCH_NAME/$DEFAULT_VERSION"
+          target_dir="$target_root/$VPS_PROJECT_DIR/$LUCI_BRANCH"
           ssh -i ~/.ssh/id_rsa "$remote" "mkdir -p '$target_dir'"
           rsync -avz --progress --delete -e "ssh -i ~/.ssh/id_rsa" "$OPENWRT_PATH/bin/" "$remote:$target_dir/"
           # 同步后在 VPS 上生成网页目录、调整权限
