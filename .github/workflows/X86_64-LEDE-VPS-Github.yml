@@ -1,4 +1,4 @@
-name: X86_64 OpenWrt deploy VPS-Github
+name: X86_64 LEDE deploy VPS-Github
 
 on:
   workflow_dispatch:
