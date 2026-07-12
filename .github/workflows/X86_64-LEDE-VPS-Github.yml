@@ -111,6 +111,8 @@ jobs:
           echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
           DEFAULT_VERSION=$(awk '/VERSION_NUMBER:=\$\(if/{gsub(/.*,/,""); gsub(/\).*/,""); print}' "./include/version.mk")
           echo "DEFAULT_VERSION=$DEFAULT_VERSION" >> $GITHUB_ENV
+          UPSTREAM_HASH=$(git rev-parse --short HEAD)
+          echo "UPSTREAM_HASH=$UPSTREAM_HASH" >> $GITHUB_ENV
 
       - name: Cache Toolchain
         if: env.CACHE_TOOLCHAIN == 'true'
@@ -119,10 +121,9 @@ jobs:
           path: |
             ${{ env.OPENWRT_PATH }}/staging_dir/toolchain-*
             ${{ env.OPENWRT_PATH }}/build_dir/toolchain-*
-          key: ${{ runner.os }}-openwrt-toolchain-${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ hashFiles('configs/x86_64.config', 'diy-script.sh', 'scripts/*.sh') }}
+          key: ${{ runner.os }}-openwrt-toolchain-${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ env.UPSTREAM_HASH }}-${{ hashFiles('configs/x86_64.config', 'diy-script.sh', 'scripts/*.sh') }}
           restore-keys: |
-            ${{ runner.os }}-openwrt-toolchain-${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-
-            ${{ runner.os }}-openwrt-toolchain-${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-
+            ${{ runner.os }}-openwrt-toolchain-${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ env.UPSTREAM_HASH }}-
 
       - name: Install Feeds
         run: |
