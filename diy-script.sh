@@ -1,22 +1,9 @@
 #!/bin/bash
 
 # 修改默认 LAN IP
-sed -i '/^CONFIG_IMAGEOPT=/d; /^# CONFIG_IMAGEOPT is not set/d; /^CONFIG_PREINITOPT=/d; /^# CONFIG_PREINITOPT is not set/d; /^CONFIG_TARGET_DEFAULT_LAN_IP_FROM_PREINIT=/d; /^CONFIG_TARGET_PREINIT_IP=/d; /^CONFIG_TARGET_PREINIT_BROADCAST=/d' .config
-cat >> .config <<'EOF'
-CONFIG_IMAGEOPT=y
-CONFIG_PREINITOPT=y
-CONFIG_TARGET_DEFAULT_LAN_IP_FROM_PREINIT=y
-CONFIG_TARGET_PREINIT_IP="192.168.5.1"
-CONFIG_TARGET_PREINIT_BROADCAST="192.168.5.255"
-EOF
+
 # 修改默认密码为空
 # sed -i 's/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.//g' package/lean/default-settings/files/zzz-default-settings
-
-# 禁用版本信息修改
-# sed -i "/DISTRIB_REVISION/s/^/#/" package/lean/default-settings/files/zzz-default-settings
-# sed -i 's/^VERSION:=$(PKG_RELEASE)-$(REVISION)/VERSION:=$(PKG_RELEASE)/' /package/base-files/Makefile
-# sed -i "/DISTRIB_DESCRIPTION/s/^/#/" package/lean/default-settings/files/zzz-default-settings
-# sed -i 's/^luciversion\s*=.*/luciversion = ""/' /feeds/luci/modules/luci-lua-runtime/luasrc/version.lua
 
 # 更改默认 Shell 为 zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
