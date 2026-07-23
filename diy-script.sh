@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# 修改默认 LAN IP
-
 # 修改默认密码为空
 # sed -i 's/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.//g' package/lean/default-settings/files/zzz-default-settings
 
@@ -12,12 +10,10 @@ sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
 
 # 移除要替换的包
-# rm -rf feeds/packages/net/smartdns
 rm -rf feeds/packages/net/{chinadns-ng,dns2socks,dns2tcp,geoview,gn,hysteria,ipt2socks,microsocks,miniupnpc,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,sing-box,ssocks,tcping,transmission-web-control,transmission,trojan-plus,tuic-client,v2ray-core,v2ray-geodata,v2ray-plugin,xray-core,xray-plugin}  #LEDE
 rm -rf feeds/packages/libs/{libdeflate,libdht,libutp,libb64,libnatpmp,libpsl}
 rm -rf feeds/luci/themes/luci-theme-argon
 rm -rf feeds/luci/applications/luci-app-argon-config
-# rm -rf feeds/luci/applications/luci-app-smartdns
 rm -rf feeds/luci/applications/luci-app-passwall  #23.05
 rm -rf feeds/luci/applications/luci-app-passwall2  #23.05
 rm -rf feeds/luci/applications/luci-app-openclash  #23.05
@@ -39,16 +35,12 @@ function git_sparse_clone() {
 # 添加额外插件
 # AdGuardHome：仅装 kenzok8 LuCI，核心由界面在线下载(不编译，加快构建)
 git_sparse_clone main https://github.com/kenzok8/small-package luci-app-adguardhome
-# git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff package/luci-app-poweroff  #18.06
 git clone --depth=1 https://github.com/tonylee2022/luci-app-openclaw package/luci-app-openclaw
 git clone --depth=1 https://github.com/sirpdboy/luci-app-poweroffdevice package/luci-app-poweroffdevice  #23.05
 git clone --depth=1 https://github.com/sirpdboy/netspeedtest package/netspeedtest-luci
 git clone --depth=1 https://github.com/sirpdboy/luci-app-advanced package/luci-app-advanced
-# git clone --depth=1 https://github.com/sirpdboy/luci-app-partexp package/luci-app-partexp ##不能识别设备
-# git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata package/luci-app-netdata ##netdata不可用
 git clone --depth=1 https://github.com/Jason6111/luci-app-netdata package/luci-app-netdata
-git clone --depth=1 https://github.com/tonylee2022/luci-app-nezha-agent package/luci-app-nezha-agent ##V1版本
-# git_sparse_clone main https://github.com/kenzok8/small-package luci-app-quickstart quickstart ##仓库被禁
+git clone --depth=1 https://github.com/tonylee2022/luci-app-nezha-agent package/luci-app-nezha-agent
 git_sparse_clone openwrt-23.05 https://github.com/openwrt/luci applications/luci-app-transmission
 git_sparse_clone openwrt-23.05 https://github.com/openwrt/packages net/transmission net/transmission-web-control net/miniupnpc libs/libdeflate libs/libdht libs/libutp libs/libb64 libs/libnatpmp libs/libpsl
 
@@ -56,25 +48,14 @@ git_sparse_clone openwrt-23.05 https://github.com/openwrt/packages net/transmiss
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/openwrt-passwall
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall package/luci-app-passwall
 git clone --depth=1 https://github.com/vernesong/OpenClash package/openclash-luci ##测试
-# git_sparse_clone master https://github.com/vernesong/OpenClash luci-app-openclash 测试后可删
 
 # Themes
-# git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon               #23.05
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
-
-# 更改 Argon 主题背景
 
 # SmartDNS
 # git clone --depth=1 https://github.com/pymumu/luci-app-smartdns package/luci-app-smartdns
 # git clone --depth=1 https://github.com/pymumu/openwrt-smartdns package/smartdns
-
-# Alist
-# git clone --depth=1 https://github.com/sbwml/luci-app-alist package/luci-app-alist
-
-# iStore
-# git_sparse_clone main https://github.com/linkease/istore-ui app-store-ui
-# git_sparse_clone main https://github.com/linkease/istore luci
 
 # 在线用户 LEDE
 git_sparse_clone main https://github.com/haiibo/packages luci-app-onliner
