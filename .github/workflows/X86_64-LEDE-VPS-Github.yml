@@ -181,6 +181,21 @@ jobs:
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
 
+      - name: Temporarily hide host runc
+        run: |
+          RUNC_PATH=/usr/local/bin/runc
+          RUNC_BACKUP=/usr/local/bin/runc.openwrt-build-disabled
+          if [ -e "$RUNC_BACKUP" ] || [ -L "$RUNC_BACKUP" ]; then
+            echo "Temporary runc backup already exists: $RUNC_BACKUP" >&2
+            exit 1
+          fi
+          if [ -x "$RUNC_PATH" ]; then
+            sudo mv "$RUNC_PATH" "$RUNC_BACKUP"
+            echo "Temporarily moved $RUNC_PATH out of the Moby build path."
+          else
+            echo "No executable $RUNC_PATH found; no temporary move is needed."
+          fi
+
       - name: Compile Firmware
         id: compile
         run: |
@@ -193,6 +208,19 @@ jobs:
           echo "DATE=$(date +"%Y-%m-%d %H")" >> $GITHUB_ENV
           echo "FILE_DATE=$(date +"%Y.%m.%d.%H")" >> $GITHUB_ENV
           echo "RELEASE_TAG=${BRANCH_NAME}-$(date +"%Y.%m.%d.%H")" >> $GITHUB_ENV
+
+      - name: Restore host runc
+        if: always()
+        run: |
+          RUNC_PATH=/usr/local/bin/runc
+          RUNC_BACKUP=/usr/local/bin/runc.openwrt-build-disabled
+          if [ -e "$RUNC_BACKUP" ] || [ -L "$RUNC_BACKUP" ]; then
+            sudo mv -f "$RUNC_BACKUP" "$RUNC_PATH"
+            test -x "$RUNC_PATH"
+            echo "Restored $RUNC_PATH for subsequent container actions."
+          else
+            echo "No temporary runc backup found; no restore is needed."
+          fi
 
       - name: Check Space Usage
         if: (!cancelled())
